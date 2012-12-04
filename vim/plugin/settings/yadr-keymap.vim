@@ -1,3 +1,6 @@
+" Arpeggio lets us define key-chord combos (simultaneous key presses)
+call arpeggio#load()
+
 " ========================================
 " General vim sanity improvements
 " ========================================
@@ -35,15 +38,52 @@ imap <silent> <D-d> _
 imap <silent> <D-K> -
 imap <silent> <D-D> -
 
-" Change inside quotes with Cmd-" and Cmd-'
-nnoremap <D-'> ci'
-nnoremap <D-"> ci"
+" ,# Surround a word with #{ruby interpolation}
+map ,# ysiw#
+vmap ,# c#{<C-R>"}<ESC>
 
-" Add spaces around a symbol with Ctrl-Space
-nnoremap <C-Space> i <esc><right>a <esc>
+" ," Surround a word with "quotes"
+map ," ysiw"
+vmap ," c"<C-R>""<ESC>
 
-" Don't have to use Shift to get into command mode, just hit semicolon
-nnoremap ; :
+" ,' Surround a word with 'single quotes'
+map ,' ysiw'
+vmap ,' c'<C-R>"'<ESC>
+
+" ,) or ,( Surround a word with (parens)
+" The difference is in whether a space is put in
+map ,( ysiw(
+map ,) ysiw)
+vmap ,( c( <C-R>" )<ESC>
+vmap ,) c(<C-R>")<ESC>
+
+" ,[ Surround a word with [brackets]
+map ,] ysiw]
+map ,[ ysiw[
+vmap ,[ c[ <C-R>" ]<ESC>
+vmap ,] c[<C-R>"]<ESC>
+
+" ,{ Surround a word with {braces}
+map ,} ysiw}
+map ,{ ysiw{
+vmap ,} c{ <C-R>" }<ESC>
+vmap ,{ c{<C-R>"}<ESC>
+
+" gary bernhardt's hashrocket
+imap <c-l> <space>=><space>
+
+" Semicolon at end of line by typing ;;
+inoremap ;; <C-o>A;<esc>
+
+" Change inside various enclosures with Cmd-" and Cmd-'
+" The f makes it find the enclosure so you don't have
+" to be standing inside it
+nnoremap <D-'> f'ci'
+nnoremap <D-"> f"ci"
+nnoremap <D-(> f(ci(
+nnoremap <D-)> f)ci)
+nnoremap <D-[> f[ci[
+nnoremap <D-]> f]ci]
 
 "Go to last edit location with ,.
 nnoremap ,. '.
@@ -57,45 +97,39 @@ nnoremap ,. '.
 " put the cursor right after the quote
 imap <C-a> <esc>wa
 
-" ================== rails.vim
-"
-" Open corresponding unittest (or spec), alias for :AV in rails.vim
-nmap ,ru :AV<CR>
-
 " ==== NERD tree
 " Cmd-Shift-N for nerd tree
 nmap <D-N> :NERDTreeToggle<CR>
+" Open the project tree and expose current file in the nerdtree with Ctrl-\
+nnoremap <silent> <C-\> :NERDTreeFind<CR>:vertical res 30<CR>
 
 " ,q to toggle quickfix window (where you have stuff like GitGrep)
 " ,oq to open it back up (rare)
-nmap <silent> ,qc :cclose<CR>
+nmap <silent> ,qc :CloseSingleConque<CR>:cclose<CR>
 nmap <silent> ,qo :copen<CR>
 
-" move up/down quickly by using Ctrl-j, Ctrl-k
+" move up/down quickly by using Cmd-j, Cmd-k
 " which will move us around by functions
-nnoremap <silent> <C-j> }
-nnoremap <silent> <C-k> {
+nnoremap <silent> <D-j> }
+nnoremap <silent> <D-k> {
+autocmd FileType ruby map <buffer> <D-j> ]m
+autocmd FileType ruby map <buffer> <D-k> [m
+autocmd FileType rspec map <buffer> <D-j> }
+autocmd FileType rspec map <buffer> <D-j> }
+autocmd FileType javascript map <buffer> <D-k> {
+autocmd FileType javascript map <buffer> <D-k> {
 
-autocmd FileType ruby map <buffer> <C-j> ]m
-autocmd FileType ruby map <buffer> <C-k> [m
-
-" Open the project tree and expose current file in the nerdtree with Ctrl-\
-nnoremap <silent> <C-\> :NERDTreeFind<CR>
 
 " Command-/ to toggle comments
 map <D-/> :TComment<CR>
 imap <D-/> <Esc>:TComment<CR>i
 
-"open up a git grep line, with a quote started for the search
+"GitGrep - open up a git grep line, with a quote started for the search
 nnoremap ,gg :GitGrep ""<left>
+"GitGrep Current Partial
 nnoremap ,gcp :GitGrepCurrentPartial<CR>
-
-" hit ,f to find the definition of the current class
-" this uses ctags. the standard way to get this is Ctrl-]
-nnoremap <silent> ,f <C-]>
-
-" use ,F to jump to tag in a vertical split
-nnoremap <silent> ,F :let word=expand("<cword>")<CR>:vsp<CR>:wincmd w<cr>:exec("tag ". word)<cr>
+"GitGrep Current File
+nnoremap ,gcf :call GitGrep(expand("%:t:r"))<CR>
 
 
 "Move back and forth through previous and next buffers
@@ -109,16 +143,12 @@ nnoremap <silent> ,x :bn<CR>
 " Move between split windows by using the four directions H, L, I, N
 " (note that  I use I and N instead of J and K because  J already does
 " line joins and K is mapped to GitGrep the current word
-nnoremap <silent> H <C-w>h
-nnoremap <silent> L <C-w>l
-nnoremap <silent> I <C-w>k
-nnoremap <silent> M <C-w>j
+nnoremap <silent> <C-h> <C-w>h
+nnoremap <silent> <C-l> <C-w>l
+nnoremap <silent> <C-k> <C-w>k
+nnoremap <silent> <C-j> <C-w>j
 
-" Move between tabs with Ctrl-Shift-H and Ctrl-Shift-L
-map <silent> <C-H> :tabprevious<cr>
-map <silent> <C-L> :tabnext<cr>
-
-" Zoom in and out of current window with ,,
+" Zoom in and out of current window with ,gz
 map <silent> ,gz <C-w>o
 
 " Use numbers to pick the tab you want (like iTerm)
@@ -138,8 +168,11 @@ map <silent> <D-9> :tabn 9<cr>
 nnoremap <silent> vv <C-w>v
 nnoremap <silent> ss <C-w>s
 
-"open the taglist (method browser) using ,t
-nnoremap <silent> ,T :TlistToggle<CR>
+" Resize windows with arrow keys
+nnoremap <D-Up> <C-w>+
+nnoremap <D-Down> <C-w>-
+nnoremap <D-Left> <C-w><
+nnoremap <D-Right>  <C-w>>
 
 " create <%= foo %> erb tags using Ctrl-k in edit mode
 imap <silent> <C-K> <%=   %><Esc>3hi
@@ -153,16 +186,17 @@ imap <silent> <C-J> <%  %><Esc>2hi
 
 " copy current filename into system clipboard - mnemonic: (c)urrent(f)ilename
 " this is helpful to paste someone the path you're looking at
-nnoremap <silent> ,cf :let @* = expand("%:p")<CR>
+nnoremap <silent> ,cf :let @* = expand("%:~")<CR>
+nnoremap <silent> ,cn :let @* = expand("%:t")<CR>
 
 "Clear current search highlight by double tapping //
 nmap <silent> // :nohlsearch<CR>
 
-" (c)opy (c)ommand - which allows us to execute
-" the line we're looking at (it does so by yy-copy, colon
-" to get to the command mode, C-f to get to history editing
-" p to paste it, C-c to return to command mode, and CR to execute
-nmap <silent> ,cc yy:<C-f>p<C-c><CR>
+"(v)im (c)ommand - execute current line as a vim command
+nmap <silent> ,vc yy:<C-f>p<C-c><CR>
+
+"(v)im (r)eload
+nmap <silent> ,vr :so %<CR>
 
 " Type ,hl to toggle highlighting on/off, and show current value.
 noremap ,hl :set hlsearch! hlsearch?<CR>
@@ -193,25 +227,20 @@ nmap sj :SplitjoinSplit<cr>
 nmap sk :SplitjoinJoin<cr>
 
 " ============================
-" VimBookmarking
-" ============================
-"
-" Set anonymous bookmarks
-nmap ,Bb :ToggleBookmark<cr>
-nmap ,Bn :NextBookmark<cr>
-nmap ,Bp :PreviousBookmark<cr>
-nmap ,Bc :ClearBookmarks<cr>
-"
-" ============================
-" Abbreviations to use...
-" ============================
-" snippets that are expanded with space
-abbr pry! require 'pry'; binding.pry
-
-" ============================
-" vim-rspec
+" vim-ruby-conque
 " ============================
 " Cmd-Shift-R for RSpec
-nmap <D-R> :RunSpec<CR>
+nmap <silent> <D-R> :call RunRspecCurrentFileConque()<CR>
 " Cmd-Shift-L for RSpec Current Line
-nmap <D-L> :RunSpecLine<CR>
+nmap <silent> <D-L> :call RunRspecCurrentLineConque()<CR>
+" ,Cmd-R for Last conque command
+nmap <silent> ,<D-R> :call RunLastConqueCommand()<CR>
+
+" Get the current highlight group. Useful for then remapping the color
+map ,hi :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<' . synIDattr(synID(line("."),col("."),0),"name") . "> lo<" . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">" . " FG:" . synIDattr(synIDtrans(synID(line("."),col("."),1)),"fg#")<CR>
+
+" Source current file Cmd-% (good for vim development)
+map <D-%> :so %<CR>
+
+" ,hp = html preview
+map <silent> ,hp :!open -a Safari %<CR><CR>

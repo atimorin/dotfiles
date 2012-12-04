@@ -1,42 +1,64 @@
-" Some color remaps
-" If statements and def statements should look similar 
-" so you can see the flow 
-hi! link rubyDefine rubyControl
+if !has("gui_macvim")
+  set t_Co=256
+  let g:solarized_termcolors=256
+endif
 
-" This is a better cursor
-hi! link Cursor VisualNOS
+hi! link txtBold Identifier
+hi! link zshVariableDef Identifier
+hi! link zshFunction Function
+hi! link rubyControl Statement
+hi! link rspecGroupMethods rubyControl
+hi! link rspecMocks Identifier
+hi! link rspecKeywords Identifier
+hi! link rubyLocalVariableOrMethod Normal
+hi! link rubyStringDelimiter Constant
+hi! link rubyString Constant
+hi! link rubyAccess Todo
+hi! link rubySymbol Identifier
+hi! link rubyPseudoVariable Type
+hi! link rubyRailsARAssociationMethod Title
+hi! link rubyRailsARValidationMethod Title
+hi! link rubyRailsMethod Title
+hi! link MatchParen DiffText
 
-" This is a bit nicer visual selection
-hi! link Visual DiffChange
+hi! link CTagsModule Type
+hi! link CTagsClass Type
+hi! link CTagsMethod Identifier
 
-" Search is way too distracting in original Solarized
-hi! link Search DiffAdd
+hi! link javascriptFuncName Type
+hi! link javascriptFunction Statement
+hi! link javascriptThis Statement
+hi! link javascriptParens Normal
+hi! link jOperators javascriptStringD
+hi! link jId Title
+hi! link jClass Title
 
-" Colors to make LustyJuggler more usable
-" the Question color in LustyJuggler is mapped to
-" the currently selected buffer.
-hi! clear Question
-hi! Question guifg=yellow
+hi! link NERDTreeFile Constant
+hi! link NERDTreeDir Identifier
 
-hi! link TagListFileName  Question
+hi! link sassProperty Type
+hi! link htmlTagName Type
 
-" For jasmine.vim
-hi! link specFunctions rubyDefine
-hi! link specMatcher rubyConstant
-hi! link specSpys rubyConstant
+hi! PreProc gui=bold
 
-" Ruby, slightly better colors for solarized
-hi! link rubyStringDelimiter rubyConstant
-hi! link rubyInterpolationDelimiter rubyConstant
-hi! link rubySymbol rubyBlockParameter
+" Solarized separators are a little garish.
+" This moves separators, comments, and normal
+" text into the same color family as the background.
+" Using the http://drpeterjones.com/colorcalc/,
+" they are now just differently saturated and
+" valued riffs on the background color, making
+" everything play together just a little more nicely.
+hi! VertSplit guifg=#003745 cterm=NONE term=NONE ctermfg=NONE ctermbg=NONE
+hi! LineNR guifg=#004C60 gui=bold guibg=#002B36 ctermfg=146
+hi! link NonText VertSplit
+hi! Normal guifg=#77A5B1
+hi! Constant guifg=#00BCE0
+hi! Comment guifg=#52737B
+hi! link htmlLink Include
+hi! CursorLine cterm=NONE gui=NONE
+hi! Visual ctermbg=233
+hi! Type gui=bold
 
-" For R and other languages that use Delimiters, we don't want them red
-hi! link Delimiter Identifier
-hi! link rDollar Identifier
 
-" For vimscript, don' tlike red..
-hi! link vimMapModKey Operator
-hi! link vimNotation Label
-
-" Better json highlighting
-hi! link htmlArg Label
+" Enforce the colors set here
+au VimEnter * so ~/.vim/plugin/settings/solarized.vim

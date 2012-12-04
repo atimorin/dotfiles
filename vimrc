@@ -24,7 +24,7 @@ set history=1000                "Store lots of :cmdline history
 set showcmd                     "Show incomplete cmds down the bottom
 set showmode                    "Show current mode down the bottom
 set gcr=a:blinkon0              "Disable cursor blink
-
+set visualbell                  "No sounds
 set autoread                    "Reload files changed outside vim
 
 " This makes vim act like all other editors, buffers can
@@ -49,12 +49,11 @@ set nowb
 
 " ================ Persistent Undo ==================
 " Keep undo history across sessions, by storing in file.
-" Only works in MacVim (gui) mode.
+" Only works all the time.
 
-if has('gui_running')
-  set undodir=~/.vim/backups
-  set undofile
-endif
+silent !mkdir ~/.vim/backups > /dev/null 2>&1
+set undodir=~/.vim/backups
+set undofile
 
 " ================ Indentation ======================
 
@@ -87,6 +86,14 @@ set wildmode=list:longest
 set wildmenu                "enable ctrl-n and ctrl-p to scroll thru matches
 set wildignore=*.o,*.obj,*~ "stuff to ignore when tab completing
 set wildignore+=*vim/backups*
+set wildignore+=*sass-cache*
+set wildignore+=*DS_Store*
+set wildignore+=vendor/rails/**
+set wildignore+=vendor/cache/**
+set wildignore+=*.gem
+set wildignore+=log/**
+set wildignore+=tmp/**
+set wildignore+=*.png,*.jpg,*.gif
 
 "
 
@@ -95,4 +102,3 @@ set wildignore+=*vim/backups*
 set scrolloff=8         "Start scrolling when we're 8 lines away from margins
 set sidescrolloff=15
 set sidescroll=1
-
